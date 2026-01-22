@@ -1,0 +1,81 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build Outputs
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Environment & Configuration
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Logs & Debugging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+*.lcov
+.jest/
+
+# Temporary Files
+.tmp/
+.temp/
+*.tmp
+*.temp
+.cache/
+
+# Package Manager
+# Note: package-lock.json is typically kept for npm projects
+# Uncomment if you want to ignore it:
+# package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Git Hooks (Husky)
+.husky/_/
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional: Uncomment if using Storybook
+# storybook-static/
+
+# Optional: Uncomment if using Cypress
+# cypress/videos/
+# cypress/screenshots/
