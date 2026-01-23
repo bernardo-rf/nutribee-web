@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 
+import './../../styles/DatePicker.css';
+
 interface DatePickerProps {
   label?: string;
   value: string | null;
@@ -16,7 +18,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   value,
   onChange,
   error,
-  required
+  required,
 }) => {
   const [currentDate, setCurrentDate] = useState(value ? new Date(value) : new Date());
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +27,20 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   const handlePrevMonth = () => {
@@ -37,11 +52,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   const handlePrevYear = () => {
-    setYearRange(prev => ({ ...prev, start: prev.start - 10, end: prev.end - 10 }));
+    setYearRange((prev) => ({ ...prev, start: prev.start - 10, end: prev.end - 10 }));
   };
 
   const handleNextYear = () => {
-    setYearRange(prev => ({ ...prev, start: prev.start + 10, end: prev.end + 10 }));
+    setYearRange((prev) => ({ ...prev, start: prev.start + 10, end: prev.end + 10 }));
   };
 
   const handleYearSelect = (year: number) => {
@@ -60,13 +75,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
   const years = Array.from(
     { length: yearRange.end - yearRange.start + 1 },
-    (_, i) => yearRange.start + i
+    (_, i) => yearRange.start + i,
   );
 
   return (
@@ -93,21 +108,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             {showYearPicker ? (
               <>
                 <div className="date-picker-header">
-                  <button
-                    type="button"
-                    onClick={handlePrevYear}
-                    className="date-picker-nav-button"
-                  >
+                  <button type="button" onClick={handlePrevYear} className="date-picker-nav-button">
                     <ChevronLeftIcon className="h-5 w-5" />
                   </button>
                   <span className="date-picker-month">
                     {yearRange.start} - {yearRange.end}
                   </span>
-                  <button
-                    type="button"
-                    onClick={handleNextYear}
-                    className="date-picker-nav-button"
-                  >
+                  <button type="button" onClick={handleNextYear} className="date-picker-nav-button">
                     <ChevronRightIcon className="h-5 w-5" />
                   </button>
                 </div>
@@ -139,9 +146,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                     <ChevronLeftIcon className="h-5 w-5" />
                   </button>
                   <div className="flex items-center gap-2">
-                    <span className="date-picker-month">
-                      {monthNames[currentDate.getMonth()]}
-                    </span>
+                    <span className="date-picker-month">{monthNames[currentDate.getMonth()]}</span>
                     <button
                       type="button"
                       onClick={() => setShowYearPicker(true)}
@@ -171,19 +176,25 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                     const day = i + 1;
                     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
                     const isToday = date.toDateString() === new Date().toDateString();
-                    const isSelected = value ? new Date(value).toDateString() === date.toDateString() : false;
+                    const isSelected = value
+                      ? new Date(value).toDateString() === date.toDateString()
+                      : false;
+
+                    let dayClassName = 'date-picker-day';
+                    if (isSelected) {
+                      dayClassName += ' date-picker-day-selected';
+                    } else if (isToday) {
+                      dayClassName += ' date-picker-day-today';
+                    } else {
+                      dayClassName += ' hover:bg-gray-100';
+                    }
+
                     return (
                       <button
                         key={day}
                         type="button"
                         onClick={() => handleDateSelect(day)}
-                        className={`date-picker-day ${
-                          isSelected
-                            ? 'date-picker-day-selected'
-                            : isToday
-                            ? 'date-picker-day-today'
-                            : 'hover:bg-gray-100'
-                        }`}
+                        className={dayClassName}
                       >
                         {day}
                       </button>
@@ -197,4 +208,4 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       )}
     </div>
   );
-}; 
+};

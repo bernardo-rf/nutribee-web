@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-import ErrorBoundary from './components/common/ErrorBoundary'
-import DashboardLayout from './components/layouts/DashboardLayout'
-import AppointmentsPage from './pages/AppointmentsPage'
-import ClientsPage from './pages/Clients'
-import Dashboard from './pages/Dashboard'
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import DashboardLayout from './components/layouts/DashboardLayout';
+import AppointmentsPage from './pages/AppointmentsPage';
+import ClientsPage from './pages/Clients';
+import Dashboard from './pages/Dashboard';
 
 const App: React.FC = () => {
   return (
@@ -25,7 +25,7 @@ const App: React.FC = () => {
         </Routes>
       </Router>
     </ErrorBoundary>
-  )
-}
+  );
+};
 
-export default App 
+export default App;

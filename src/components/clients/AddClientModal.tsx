@@ -10,6 +10,7 @@ import ArrayInput from '../common/ArrayInput';
 import { DatePicker } from '../common/DatePicker';
 import MeasurementInput from '../common/MeasurementInput';
 import RequiredFieldIndicator from '../common/RequiredFieldIndicator';
+import './../../styles/AddClientModal.css';
 
 interface AddClientModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
     '4': true,
     '5': true,
     '6': true,
-    '7': true
+    '7': true,
   });
 
   const {
@@ -57,19 +58,15 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
     },
   });
 
-  const sections = [
-    'General Information',
-    'Health & Body Metrics',
-    'Health Goals'
-  ];
+  const sections = ['General Information', 'Health & Body Metrics', 'Health Goals'];
 
   const TOTAL_SECTIONS = sections.length;
 
   const toggleSection = (section: string | number) => {
     const sectionKey = section.toString();
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [sectionKey]: !prev[sectionKey]
+      [sectionKey]: !prev[sectionKey],
     }));
   };
 
@@ -80,9 +77,9 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
   useEffect(() => {
     const sectionKey = currentSection;
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [sectionKey]: true
+      [sectionKey]: true,
     }));
   }, [currentSection]);
 
@@ -93,14 +90,14 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
       onSuccess();
       onClose();
     } catch (error) {
-      // Error handling without console.error
+      // TODO: Error handling without console.error
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const getSectionFields = (section: string | number): string[] => {
-    const sectionNumber = typeof section === 'string' ? parseInt(section) : section;
+    const sectionNumber = typeof section === 'string' ? Number.parseInt(section) : section;
     switch (sectionNumber) {
       case 0:
         return [
@@ -124,7 +121,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
           'foodPreferences',
           'foodAllergies',
           'foodIntolerances',
-          'waterIntake'
+          'waterIntake',
         ];
       case 1:
         return ['height.value', 'weight.value', 'bmi'];
@@ -143,7 +140,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
   const hasSectionErrors = (section: string | number): boolean => {
     const fields = getSectionFields(section);
-    return fields.some(field => {
+    return fields.some((field) => {
       const fieldPath = field.split('.');
       let currentErrors: Record<string, unknown> | undefined = errors as Record<string, unknown>;
       for (const path of fieldPath) {
@@ -158,14 +155,14 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
   };
 
   const handleNext = () => {
-    const nextSection = (parseInt(currentSection) + 1).toString();
-    if (!hasSectionErrors(parseInt(currentSection))) {
+    const nextSection = (Number.parseInt(currentSection) + 1).toString();
+    if (!hasSectionErrors(Number.parseInt(currentSection))) {
       setCurrentSection(nextSection);
     }
   };
 
   const handlePrevious = () => {
-    const prevSection = (parseInt(currentSection) - 1).toString();
+    const prevSection = (Number.parseInt(currentSection) - 1).toString();
     setCurrentSection(prevSection);
   };
 
@@ -178,16 +175,12 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
   return (
     <div className="fixed inset-0 z-50">
       <div className="modal-overlay" />
-      
+
       <div className="modal-container">
         <div className="modal-content">
           <div className="modal-panel">
             <div className="absolute top-0 right-0 pt-4 pr-4">
-              <button
-                type="button"
-                className="modal-close-button"
-                onClick={onClose}
-              >
+              <button type="button" className="modal-close-button" onClick={onClose}>
                 <span className="sr-only">Close</span>
                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
               </button>
@@ -195,26 +188,23 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
             <div className="modal-body">
               <h3 className="modal-title">Add New Client</h3>
-              
+
               {/* Progress Steps */}
               <div className="progress-steps">
                 <div className="progress-steps-container">
                   {sections.map((section, index) => {
                     let buttonClass = 'progress-step-button ';
-                    if (index === parseInt(currentSection)) {
+                    if (index === Number.parseInt(currentSection)) {
                       buttonClass += 'progress-step-button-active';
-                    } else if (index < parseInt(currentSection)) {
+                    } else if (index < Number.parseInt(currentSection)) {
                       buttonClass += 'progress-step-button-completed';
                     } else {
                       buttonClass += 'progress-step-button-upcoming';
                     }
-                    
+
                     return (
                       <div key={section} className="progress-step">
-                        <button
-                          onClick={() => handleSectionClick(index)}
-                          className={buttonClass}
-                        >
+                        <button onClick={() => handleSectionClick(index)} className={buttonClass}>
                           {index + 1}
                         </button>
                         <div className="progress-step-label">{section}</div>
@@ -226,7 +216,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* General Information Section */}
-                {parseInt(currentSection) === 0 && (
+                {Number.parseInt(currentSection) === 0 && (
                   <div className="form-section">
                     <div className="form-header">
                       <h3 className="form-header-title">General Information</h3>
@@ -234,10 +224,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                         Enter the client&apos;s basic personal and appointment information
                       </p>
                     </div>
-                    
+
                     {/* Personal Information */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('0')}
@@ -257,12 +247,15 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('0') && (
                         <div className="client-form-section-content">
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="name"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Name
                                 <RequiredFieldIndicator />
                               </label>
@@ -281,7 +274,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="phone"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Phone
                                   <RequiredFieldIndicator />
                                 </label>
@@ -299,7 +295,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="email"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Email
                                   <RequiredFieldIndicator />
                                 </label>
@@ -319,7 +318,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="gender"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Gender
                                   <RequiredFieldIndicator />
                                 </label>
@@ -339,7 +341,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="dateOfBirth"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Date of Birth
                                   <RequiredFieldIndicator />
                                 </label>
@@ -353,7 +358,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           </div>
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="occupation" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="occupation"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Occupation
                                 <RequiredFieldIndicator />
                               </label>
@@ -375,7 +383,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
                     {/* Appointment Information */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('1')}
@@ -395,12 +403,15 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('1') && (
                         <div className="client-form-section-content">
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="appointmentReason" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="appointmentReason"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Reason for Appointment
                                 <RequiredFieldIndicator />
                               </label>
@@ -413,12 +424,17 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                               rows={4}
                             />
                             {errors.appointmentReason && (
-                              <p className="client-form-error">{errors.appointmentReason.message}</p>
+                              <p className="client-form-error">
+                                {errors.appointmentReason.message}
+                              </p>
                             )}
                           </div>
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="expectations" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="expectations"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Expectations
                                 <RequiredFieldIndicator />
                               </label>
@@ -436,7 +452,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           </div>
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="clinicalObjective" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="clinicalObjective"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Clinical Objective
                                 <RequiredFieldIndicator />
                               </label>
@@ -449,7 +468,9 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                               rows={4}
                             />
                             {errors.clinicalObjective && (
-                              <p className="client-form-error">{errors.clinicalObjective.message}</p>
+                              <p className="client-form-error">
+                                {errors.clinicalObjective.message}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -458,7 +479,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
                     {/* Personal & Social History */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('2')}
@@ -478,13 +499,16 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('2') && (
                         <div className="client-form-section-content">
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="sleepQuality" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="sleepQuality"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Sleep Quality
                                   <RequiredFieldIndicator />
                                 </label>
@@ -506,7 +530,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="smokingStatus" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="smokingStatus"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Smoking Status
                                   <RequiredFieldIndicator />
                                 </label>
@@ -529,7 +556,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="alcoholConsumption" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="alcoholConsumption"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Alcohol Consumption
                                   <RequiredFieldIndicator />
                                 </label>
@@ -545,12 +575,17 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 <option value="regular">Regular</option>
                               </select>
                               {errors.alcoholConsumption && (
-                                <p className="client-form-error">{errors.alcoholConsumption.message}</p>
+                                <p className="client-form-error">
+                                  {errors.alcoholConsumption.message}
+                                </p>
                               )}
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="maritalStatus" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="maritalStatus"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Marital Status
                                   <RequiredFieldIndicator />
                                 </label>
@@ -573,7 +608,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           </div>
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="intestinalFunction" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="intestinalFunction"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Intestinal Function
                                 <RequiredFieldIndicator />
                               </label>
@@ -586,12 +624,17 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                               rows={4}
                             />
                             {errors.intestinalFunction && (
-                              <p className="client-form-error">{errors.intestinalFunction.message}</p>
+                              <p className="client-form-error">
+                                {errors.intestinalFunction.message}
+                              </p>
                             )}
                           </div>
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="physicalActivity" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="physicalActivity"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Physical Activity
                                 <RequiredFieldIndicator />
                               </label>
@@ -607,12 +650,15 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                               <p className="client-form-error">{errors.physicalActivity.message}</p>
                             )}
                           </div>
-                          
+
                           {/* Lifestyle & Activity Options */}
                           <div className="client-form-grid-3">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="activityLevel" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="activityLevel"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Activity Level
                                   <RequiredFieldIndicator />
                                 </label>
@@ -634,7 +680,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="occupationType" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="occupationType"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Occupation Type
                                   <RequiredFieldIndicator />
                                 </label>
@@ -655,7 +704,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="exerciseRoutine" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="exerciseRoutine"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Exercise Routine
                                   <RequiredFieldIndicator />
                                 </label>
@@ -672,14 +724,19 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 <option value="intense">Intense</option>
                               </select>
                               {errors.exerciseRoutine && (
-                                <p className="client-form-error">{errors.exerciseRoutine.message}</p>
+                                <p className="client-form-error">
+                                  {errors.exerciseRoutine.message}
+                                </p>
                               )}
                             </div>
                           </div>
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="wakeUpTime" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="wakeUpTime"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Wake Up Time
                                   <RequiredFieldIndicator />
                                 </label>
@@ -696,7 +753,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="bedTime" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="bedTime"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Bed Time
                                   <RequiredFieldIndicator />
                                 </label>
@@ -718,7 +778,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
                     {/* Dietary Information */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('3')}
@@ -738,7 +798,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('3') && (
                         <div className="client-form-section-content">
                           <div className="form-field">
@@ -770,7 +830,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           </div>
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="waterIntake" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="waterIntake"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Daily Water Intake (Liters)
                                 <RequiredFieldIndicator />
                               </label>
@@ -783,7 +846,9 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                               step="0.1"
                             />
                             {errors.hydration?.dailyWaterIntake && (
-                              <p className="client-form-error">{errors.hydration.dailyWaterIntake.message}</p>
+                              <p className="client-form-error">
+                                {errors.hydration.dailyWaterIntake.message}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -793,7 +858,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                 )}
 
                 {/* Health & Body Metrics Section */}
-                {parseInt(currentSection) === 1 && (
+                {Number.parseInt(currentSection) === 1 && (
                   <div className="form-section">
                     <div className="form-header">
                       <h3 className="form-header-title">Health & Body Metrics</h3>
@@ -801,10 +866,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                         Enter the client&apos;s body measurements and health metrics
                       </p>
                     </div>
-                    
+
                     {/* Anthropometric Measurements */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('4')}
@@ -824,7 +889,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('4') && (
                         <div className="client-form-section-content">
                           <div className="client-form-grid">
@@ -838,7 +903,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 placeholder="Enter client's standing height"
                                 units={[
                                   { value: 'cm', label: 'cm' },
-                                  { value: 'in', label: 'in' }
+                                  { value: 'in', label: 'in' },
                                 ]}
                               />
                             </div>
@@ -852,7 +917,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 placeholder="Enter client's current weight"
                                 units={[
                                   { value: 'kg', label: 'kg' },
-                                  { value: 'lbs', label: 'lbs' }
+                                  { value: 'lbs', label: 'lbs' },
                                 ]}
                               />
                             </div>
@@ -867,7 +932,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 placeholder="Measure around the belly button"
                                 units={[
                                   { value: 'cm', label: 'cm' },
-                                  { value: 'in', label: 'in' }
+                                  { value: 'in', label: 'in' },
                                 ]}
                               />
                             </div>
@@ -880,7 +945,7 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 placeholder="Measure at the narrowest part"
                                 units={[
                                   { value: 'cm', label: 'cm' },
-                                  { value: 'in', label: 'in' }
+                                  { value: 'in', label: 'in' },
                                 ]}
                               />
                             </div>
@@ -895,13 +960,16 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 placeholder="Measure at nipple level"
                                 units={[
                                   { value: 'cm', label: 'cm' },
-                                  { value: 'in', label: 'in' }
+                                  { value: 'in', label: 'in' },
                                 ]}
                               />
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="bmi" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="bmi"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   BMI
                                 </label>
                               </div>
@@ -923,10 +991,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Analytical Data */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('5')}
@@ -946,13 +1014,16 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('5') && (
                         <div className="client-form-section-content">
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="hdlCholesterol" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="hdlCholesterol"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   HDL Cholesterol (mg/dL)
                                 </label>
                               </div>
@@ -969,7 +1040,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="ldlCholesterol" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="ldlCholesterol"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   LDL Cholesterol (mg/dL)
                                 </label>
                               </div>
@@ -988,7 +1062,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="totalCholesterol" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="totalCholesterol"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Total Cholesterol (mg/dL)
                                 </label>
                               </div>
@@ -1000,12 +1077,17 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 step="0.1"
                               />
                               {errors.totalCholesterol && (
-                                <p className="client-form-error">{errors.totalCholesterol.message}</p>
+                                <p className="client-form-error">
+                                  {errors.totalCholesterol.message}
+                                </p>
                               )}
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="triglycerides" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="triglycerides"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Triglycerides (mg/dL)
                                 </label>
                               </div>
@@ -1024,10 +1106,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Body Composition */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('6')}
@@ -1047,13 +1129,16 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('6') && (
                         <div className="client-form-section-content">
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="visceralFat" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="visceralFat"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Visceral Fat
                                 </label>
                               </div>
@@ -1070,7 +1155,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="muscleMass" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="muscleMass"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Muscle Mass (kg)
                                 </label>
                               </div>
@@ -1089,7 +1177,10 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="bodyFatPercentage" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="bodyFatPercentage"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Body Fat Percentage (%)
                                 </label>
                               </div>
@@ -1103,12 +1194,17 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 max="100"
                               />
                               {errors.bodyFatPercentage && (
-                                <p className="client-form-error">{errors.bodyFatPercentage.message}</p>
+                                <p className="client-form-error">
+                                  {errors.bodyFatPercentage.message}
+                                </p>
                               )}
                             </div>
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="muscleMassPercentage" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="muscleMassPercentage"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Muscle Mass Percentage (%)
                                 </label>
                               </div>
@@ -1122,14 +1218,19 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 max="100"
                               />
                               {errors.muscleMassPercentage && (
-                                <p className="client-form-error">{errors.muscleMassPercentage.message}</p>
+                                <p className="client-form-error">
+                                  {errors.muscleMassPercentage.message}
+                                </p>
                               )}
                             </div>
                           </div>
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="bodyWaterPercentage" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="bodyWaterPercentage"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Body Water Percentage (%)
                                 </label>
                               </div>
@@ -1143,7 +1244,9 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 max="100"
                               />
                               {errors.bodyWaterPercentage && (
-                                <p className="client-form-error">{errors.bodyWaterPercentage.message}</p>
+                                <p className="client-form-error">
+                                  {errors.bodyWaterPercentage.message}
+                                </p>
                               )}
                             </div>
                           </div>
@@ -1154,18 +1257,18 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                 )}
 
                 {/* Health Goals Section */}
-                {parseInt(currentSection) === 2 && (
+                {Number.parseInt(currentSection) === 2 && (
                   <div className="form-section">
                     <div className="form-header">
                       <h3 className="form-header-title">Health Goals</h3>
                       <p className="form-header-description">
-                        Define the client's health and nutrition objectives
+                        Define the client&apos;s health and nutrition objectives
                       </p>
                     </div>
-                    
+
                     {/* Goals & Objectives */}
                     <div className="client-form-section">
-                      <button 
+                      <button
                         type="button"
                         className="client-form-section-header"
                         onClick={() => toggleSection('7')}
@@ -1185,13 +1288,16 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                           )}
                         </div>
                       </button>
-                      
+
                       {isSectionExpanded('7') && (
                         <div className="client-form-section-content">
                           <div className="client-form-grid">
                             <div>
                               <div className="flex items-center mb-1">
-                                <label htmlFor="primaryGoal" className="block text-sm font-medium text-gray-700">
+                                <label
+                                  htmlFor="primaryGoal"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
                                   Primary Goal
                                   <RequiredFieldIndicator />
                                 </label>
@@ -1221,15 +1327,18 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
                                 placeholder="Enter target weight goal"
                                 units={[
                                   { value: 'kg', label: 'kg' },
-                                  { value: 'lbs', label: 'lbs' }
+                                  { value: 'lbs', label: 'lbs' },
                                 ]}
                               />
                             </div>
                           </div>
-                          
+
                           <div className="form-field">
                             <div className="flex items-center mb-1">
-                              <label htmlFor="healthConcerns" className="block text-sm font-medium text-gray-700">
+                              <label
+                                htmlFor="healthConcerns"
+                                className="block text-sm font-medium text-gray-700"
+                              >
                                 Health Concerns
                                 <RequiredFieldIndicator />
                               </label>
@@ -1255,38 +1364,22 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
 
             <div className="modal-footer">
               <div className="button-container">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={onClose}
-                >
+                <button type="button" className="btn-secondary" onClick={onClose}>
                   Cancel
                 </button>
-                
-                {parseInt(currentSection) > 0 && (
-                  <button
-                    type="button"
-                    onClick={handlePrevious}
-                    className="btn-secondary"
-                  >
+
+                {Number.parseInt(currentSection) > 0 && (
+                  <button type="button" onClick={handlePrevious} className="btn-secondary">
                     Previous
                   </button>
                 )}
-                
-                {parseInt(currentSection) === TOTAL_SECTIONS - 1 ? (
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="btn-primary"
-                  >
+
+                {Number.parseInt(currentSection) === TOTAL_SECTIONS - 1 ? (
+                  <button type="submit" disabled={isSubmitting} className="btn-primary">
                     {isSubmitting ? 'Adding...' : 'Add Client'}
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="btn-primary"
-                  >
+                  <button type="button" onClick={handleNext} className="btn-primary">
                     Next
                   </button>
                 )}
@@ -1299,4 +1392,4 @@ const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose, onSucc
   );
 };
 
-export default AddClientModal; 
+export default AddClientModal;

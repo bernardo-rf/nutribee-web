@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, forwardRef } from 'react';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -24,7 +24,7 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 );
 
 interface ButtonProps
@@ -35,26 +35,31 @@ interface ButtonProps
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    isLoading, 
-    loadingText,
-    children, 
-    disabled,
-    'aria-label': ariaLabel,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      isLoading,
+      loadingText,
+      children,
+      disabled,
+      'aria-label': ariaLabel,
+      ...props
+    },
+    ref,
+  ) => {
     const buttonContent = isLoading ? (
       <>
-        <div 
-          className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" 
+        <div
+          className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
           aria-hidden="true"
         />
         {loadingText ?? children}
       </>
-    ) : children;
+    ) : (
+      children
+    );
 
     return (
       <button
@@ -68,9 +73,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {buttonContent}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';
 
-export { Button, buttonVariants }; 
+export { Button, buttonVariants };

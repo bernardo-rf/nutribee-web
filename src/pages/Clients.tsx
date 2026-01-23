@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useDispatch } from 'react-redux';
 
 import AddClientModal from '@/components/clients/AddClientModal';
 import PageLayout from '@/components/layout/PageLayout';
-import { clientsService } from '@/services/clientsService';
+import { useClients } from '@/hooks/useClients';
+import type { AppDispatch } from '@/store';
+import { clearError } from '@/store/slices/clientsSlice';
 import type { Client } from '@/types/domain';
 
-const ClientsList: React.FC<{ clients: Client[]; isLoading: boolean }> = ({ clients, isLoading }) => {
+const ClientsList: React.FC<{ clients: Client[]; isLoading: boolean }> = ({
+  clients,
+  isLoading,
+}) => {
   if (isLoading) {
     return (
       <div className="text-center py-12">
@@ -34,7 +40,10 @@ const ClientsList: React.FC<{ clients: Client[]; isLoading: boolean }> = ({ clie
               <div className="flex items-center">
                 <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
                   <span className="text-primary-700 font-medium text-sm">
-                    {client.name.split(' ').map(n => n[0]).join('')}
+                    {client.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
                   </span>
                 </div>
                 <div className="ml-4">
@@ -59,33 +68,27 @@ const ClientsList: React.FC<{ clients: Client[]; isLoading: boolean }> = ({ clie
 };
 
 const ClientsPage: React.FC = () => {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+  const { clients, isLoading, error, getClients } = useClients();
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const loadClients = async () => {
-    try {
-      const response = await clientsService.getAll();
-      setClients(response);
-    } catch (error) {
-      // Error handling without console.error
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadClients();
-  }, []);
+    getClients();
+  }, [getClients]);
 
-  const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredClients = clients.filter(
+    (client) =>
+      client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      client.email.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleAddSuccess = () => {
-    loadClients();
+    getClients();
+  };
+
+  const handleDismissError = () => {
+    dispatch(clearError());
   };
 
   const actions = (
@@ -123,6 +126,30 @@ const ClientsPage: React.FC = () => {
       actions={actions}
       searchAndFilters={searchAndFilters}
     >
+      {error && (
+        <div className="mb-4 rounded-md bg-red-50 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <XMarkIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div className="ml-3 flex-1">
+              <p className="text-sm font-medium text-red-800">{error}</p>
+            </div>
+            <div className="ml-auto pl-3">
+              <div className="-mx-1.5 -my-1.5">
+                <button
+                  type="button"
+                  onClick={handleDismissError}
+                  className="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50"
+                >
+                  <span className="sr-only">Dismiss</span>
+                  <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <ClientsList clients={filteredClients} isLoading={isLoading} />
       <AddClientModal
         isOpen={isAddModalOpen}
@@ -133,4 +160,4 @@ const ClientsPage: React.FC = () => {
   );
 };
 
-export default ClientsPage; 
+export default ClientsPage;

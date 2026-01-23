@@ -1,15 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 
-import { UsersIcon, CalendarIcon, ChartBarIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline'
+import {
+  UsersIcon,
+  CalendarIcon,
+  ChartBarIcon,
+  ArrowTrendingUpIcon,
+} from '@heroicons/react/24/outline';
 
-import { useClients } from '@/hooks/useClients'
+import { useClients } from '@/hooks/useClients';
 
 const stats = [
   { name: 'Total Clients', value: '12', icon: UsersIcon },
   { name: 'Appointments This Week', value: '8', icon: CalendarIcon },
   { name: 'Active Programs', value: '5', icon: ChartBarIcon },
   { name: 'Client Progress', value: '92%', icon: ArrowTrendingUpIcon },
-]
+];
 
 const Dashboard: React.FC = () => {
   const { getClients, status, error } = useClients();
@@ -35,8 +40,8 @@ const Dashboard: React.FC = () => {
         <div className="text-center">
           <div className="text-red-600 text-xl">Error loading dashboard</div>
           <p className="mt-2 text-gray-600">{error}</p>
-          <button 
-            onClick={() => getClients()} 
+          <button
+            onClick={() => getClients()}
             className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
             Try Again
@@ -50,9 +55,7 @@ const Dashboard: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold text-gray-900">Welcome to NutriBee</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Your nutrition practice management dashboard
-        </p>
+        <p className="mt-1 text-sm text-gray-500">Your nutrition practice management dashboard</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -98,7 +101,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard 
+export default Dashboard;

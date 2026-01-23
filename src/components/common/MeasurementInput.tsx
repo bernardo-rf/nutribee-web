@@ -1,8 +1,7 @@
-import React from 'react';
-
-import { UseFormRegister, FieldError, FieldErrors, Path } from 'react-hook-form';
-import RequiredFieldIndicator from './RequiredFieldIndicator';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { UseFormRegister, FieldError, FieldErrors, Path } from 'react-hook-form';
+
+import RequiredFieldIndicator from './RequiredFieldIndicator';
 
 interface MeasurementInputProps<T extends Record<string, unknown>> {
   label: string;
@@ -54,9 +53,7 @@ const MeasurementInput = <T extends Record<string, unknown>>({
         {description && (
           <div className="client-form-info-tooltip">
             <InformationCircleIcon className="h-4 w-4 text-gray-400 cursor-help" />
-            <div className="client-form-tooltip-content">
-              {description}
-            </div>
+            <div className="client-form-tooltip-content">{description}</div>
           </div>
         )}
       </div>
@@ -87,4 +84,4 @@ const MeasurementInput = <T extends Record<string, unknown>>({
   );
 };
 
-export default MeasurementInput; 
+export default MeasurementInput;

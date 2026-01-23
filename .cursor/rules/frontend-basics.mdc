@@ -1,0 +1,499 @@
+---
+description: Core frontend development standards and best practices for React + TypeScript projects
+alwaysApply: true
+---
+
+# Frontend Development Standards
+
+## TypeScript Standards
+
+### Strict Typing
+
+- Always use strict TypeScript settings - no `any` types allowed
+- Prefer type inference where possible, but be explicit for function parameters and return types when unclear
+- Use `interface` for object shapes that may be extended, `type` for unions, intersections, and computed types
+
+```typescript
+// ❌ BAD
+function processData(data: any) {
+  return data.value;
+}
+
+// ✅ GOOD
+function processData(data: { value: string }): string {
+  return data.value;
+}
+```
+
+### Path Aliases
+
+- Always use `@/*` path alias instead of relative imports for `src/` directory
+- Import order: external packages → internal modules (components, services, types, utils)
+
+```typescript
+// ❌ BAD
+import { Button } from '../../../components/common/Button';
+import { Client } from '../../types/domain';
+
+// ✅ GOOD
+import { Button } from '@/components/common/Button';
+import { Client } from '@/types/domain';
+```
+
+### Type Definitions
+
+- Define domain types in `src/types/domain.ts`
+- Use Zod schemas for runtime validation, infer types with `z.infer<typeof schema>`
+- Create DTO interfaces in service files for API request/response types
+
+```typescript
+// ✅ GOOD - Domain type
+export interface Client extends BaseEntity {
+  name: string;
+  email: string;
+}
+
+// ✅ GOOD - Schema with type inference
+export const clientSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+});
+export type ClientFormData = z.infer<typeof clientSchema>;
+
+// ✅ GOOD - DTO in service file
+export interface CreateClientDTO {
+  name: string;
+  email: string;
+}
+```
+
+## React Component Patterns
+
+### Functional Components
+
+- Always use functional components with TypeScript
+- Use `React.FC` or explicit return type annotations
+- Prefer `forwardRef` when component needs to forward refs
+
+```typescript
+// ✅ GOOD
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  isLoading?: boolean;
+}
+
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, isLoading, children, ...props }, ref) => {
+    return (
+      <button ref={ref} className={className} {...props}>
+        {children}
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';
+```
+
+### Props Interface Patterns
+
+- Extend native HTML element props when appropriate
+- Use descriptive prop names
+- Mark optional props with `?`
+- Provide default values for optional props
+
+```typescript
+// ✅ GOOD
+interface FormInputProps<T extends Record<string, unknown>> {
+  label: string;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  error?: FieldError;
+  required?: boolean;
+  type?: 'text' | 'email' | 'tel';
+}
+```
+
+### Accessibility
+
+- Always include ARIA labels for interactive elements
+- Use semantic HTML elements
+- Ensure keyboard navigation support
+- Provide loading states with `aria-busy` and `aria-label`
+
+```typescript
+// ✅ GOOD
+<button
+  disabled={isLoading || disabled}
+  aria-busy={isLoading}
+  aria-label={ariaLabel ?? (typeof children === 'string' ? children : undefined)}
+>
+  {isLoading ? <Spinner aria-hidden="true" /> : children}
+</button>
+```
+
+### Component Composition
+
+- Keep components small and focused on a single responsibility
+- Extract reusable logic into custom hooks
+- Use composition over prop drilling
+
+## State Management (Redux Toolkit)
+
+### Slice Structure
+
+- Use `createSlice` for synchronous state updates
+- Use `createAsyncThunk` for async operations
+- Export selectors alongside slice
+- Keep slice state minimal - only what's needed globally
+
+```typescript
+// ✅ GOOD
+const clientsSlice = createSlice({
+  name: 'clients',
+  initialState,
+  reducers: {
+    setSelectedClient: (state, action: PayloadAction<Client | null>) => {
+      state.selectedClient = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchClients.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchClients.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      });
+  },
+});
+
+// Export selectors
+export const selectAllClients = (state: RootState) => state.clients.items;
+```
+
+### Async Thunks
+
+- Use descriptive thunk names: `feature/actionName`
+- Handle all three states: pending, fulfilled, rejected
+- Return typed data from thunk
+
+```typescript
+// ✅ GOOD
+export const fetchClients = createAsyncThunk(
+  'clients/fetchClients',
+  async () => {
+    return await clientsService.getAll();
+  }
+);
+```
+
+### Custom Hooks
+
+- Wrap Redux selectors and actions in custom hooks
+- Use `useCallback` for action dispatchers
+- Return a clean API with descriptive names
+
+```typescript
+// ✅ GOOD
+export const useClients = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const clients = useSelector(selectAllClients);
+  const status = useSelector(selectClientsStatus);
+
+  const getClients = useCallback(() => {
+    return dispatch(fetchClients());
+  }, [dispatch]);
+
+  return {
+    clients,
+    isLoading: status === 'loading',
+    getClients,
+  };
+};
+```
+
+## Styling (Tailwind CSS)
+
+### Utility-First Approach
+
+- Use Tailwind utility classes directly in components
+- Avoid inline styles unless absolutely necessary
+- Use `class-variance-authority` (CVA) for component variants
+
+```typescript
+// ✅ GOOD - Using CVA for variants
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-md',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary-600 text-white hover:bg-primary-700',
+        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-8 px-3 text-xs',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  }
+);
+```
+
+### Color and Spacing
+
+- Use theme colors from `tailwind.config.js` (e.g., `primary-600`)
+- Use consistent spacing scale (4, 8, 12, 16, etc.)
+- Prefer semantic color names over arbitrary values
+
+```typescript
+// ✅ GOOD
+className="bg-primary-600 text-white p-4 rounded-md"
+
+// ❌ BAD
+className="bg-[#22c55e] text-white p-[16px] rounded-[6px]"
+```
+
+### Responsive Design
+
+- Use Tailwind responsive prefixes (`sm:`, `md:`, `lg:`, `xl:`)
+- Mobile-first approach - base styles for mobile, then add larger breakpoints
+
+## Forms (React Hook Form + Zod)
+
+### Schema-First Validation
+
+- Define Zod schemas before form components
+- Use schema inference for TypeScript types
+- Validate all user inputs with appropriate Zod validators
+
+```typescript
+// ✅ GOOD
+export const clientFormSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  dateOfBirth: z.string().min(1, 'Date of birth is required'),
+});
+
+export type ClientFormData = z.infer<typeof clientFormSchema>;
+```
+
+### Form Component Patterns
+
+- Use `useForm` hook with Zod resolver
+- Pass `register` and `errors` to form inputs
+- Display validation errors clearly
+
+```typescript
+// ✅ GOOD
+const { register, handleSubmit, formState: { errors } } = useForm<ClientFormData>({
+  resolver: zodResolver(clientFormSchema),
+});
+
+<FormInput
+  label="Name"
+  name="name"
+  register={register}
+  error={errors.name}
+  required
+/>
+```
+
+### Error Handling
+
+- Show field-level errors below inputs
+- Use consistent error message styling
+- Provide helpful, actionable error messages
+
+## Service Layer
+
+### Service Structure
+
+- Create service objects with typed methods
+- Use DTO interfaces for request/response types
+- Handle development vs production API differences
+
+```typescript
+// ✅ GOOD
+export interface CreateClientDTO {
+  name: string;
+  email: string;
+}
+
+export const clientsService = {
+  async getAll(): Promise<Client[]> {
+    if (isDevelopment) {
+      const response = await mockApi.get<Client[]>('/clients');
+      return response.data;
+    }
+    const response = await get<Client[]>('/clients');
+    return response.data;
+  },
+  
+  async create(client: CreateClientDTO): Promise<Client> {
+    const response = await post<Client>('/clients', client);
+    return response.data;
+  },
+};
+```
+
+### HTTP Client
+
+- Use typed axios helpers (`get`, `post`, `patch`, `del`)
+- Handle errors consistently
+- Use interceptors for common concerns (auth, logging, retries)
+
+## Code Organization
+
+### File Structure
+
+- Group by feature/domain, not by file type
+- Keep related files together (component + styles + tests)
+- Use index files for clean imports when appropriate
+
+```bash
+src/
+  components/
+    clients/
+      AddClientModal.tsx
+      form-sections/
+        PersonalInformation.tsx
+  services/
+    clientsService.ts
+  store/
+    slices/
+      clientsSlice.ts
+  types/
+    domain.ts
+```
+
+### Import Ordering
+
+- Follow ESLint `import/order` rules strictly:
+  1. **External packages** (React, third-party libraries)
+  2. **Internal regular imports** (components, services, utils - using `@/*` path alias)
+  3. **Internal type imports** (types, interfaces - using `@/*` path alias)
+  4. **Relative imports** (only when necessary, avoid when possible)
+- **Regular imports must come before type imports** within internal modules
+- **Type imports must be grouped together** and sorted alphabetically
+- **Use blank lines between import groups** (external, internal regular, internal type)
+- **No blank lines within the same import group**
+- All imports within a group should be sorted alphabetically
+
+```typescript
+// ✅ GOOD - Simple case
+import React from 'react';
+
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Button } from '@/components/common/Button';
+import { clientsService } from '@/services/clientsService';
+
+import type { Client } from '@/types/domain';
+```
+
+```typescript
+// ✅ GOOD - With mixed regular and type imports
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+
+import { clientsService, CreateClientDTO, UpdateClientDTO } from '@/services/clientsService';
+
+import type { RootState } from '@/store';
+import type { Client } from '@/types/domain';
+```
+
+```typescript
+// ❌ BAD - Type imports before regular imports
+import type { Client } from '@/types/domain';
+import { clientsService } from '@/services/clientsService';
+
+// ❌ BAD - Blank lines within same group
+import type { RootState } from '@/store';
+
+import type { Client } from '@/types/domain';
+
+// ❌ BAD - Wrong alphabetical order
+import type { Client } from '@/types/domain';
+import type { RootState } from '@/store';
+```
+
+### Naming Conventions
+
+- Components: PascalCase (`Button`, `AddClientModal`)
+- Hooks: camelCase starting with `use` (`useClients`, `useForm`)
+- Services: camelCase ending with `Service` (`clientsService`)
+- Types/Interfaces: PascalCase (`Client`, `CreateClientDTO`)
+- Constants: UPPER_SNAKE_CASE (`MAX_RETRIES`, `APP_CONFIG`)
+
+## Testing Considerations
+
+### Component Testing
+
+- Use React Testing Library for component tests
+- Test user interactions, not implementation details
+- Use descriptive test names
+
+```typescript
+// ✅ GOOD
+it('should display error message when form is submitted with invalid data', async () => {
+  render(<ClientForm />);
+  await userEvent.click(screen.getByRole('button', { name: /submit/i }));
+  expect(await screen.findByText(/name is required/i)).toBeInTheDocument();
+});
+```
+
+### Mock Patterns
+
+- Mock API calls at the service level
+- Use MSW (Mock Service Worker) for integration tests when possible
+- Keep mocks close to what they're testing
+
+## Error Handling
+
+### Error Boundaries
+
+- Use ErrorBoundary component to catch React errors
+- Provide fallback UI for error states
+- Log errors appropriately
+
+### API Error Handling
+
+- Transform API errors to consistent format
+- Handle network errors, validation errors, and server errors
+- Provide user-friendly error messages
+
+```typescript
+// ✅ GOOD
+try {
+  const client = await clientsService.create(data);
+  // Handle success
+} catch (error) {
+  if (error instanceof ApiError) {
+    // Handle API error
+    showError(error.message);
+  } else {
+    // Handle unexpected error
+    showError('An unexpected error occurred');
+  }
+}
+```
+
+## Performance
+
+### Optimization
+
+- Use `React.memo` for expensive components that re-render frequently
+- Use `useCallback` and `useMemo` judiciously (not everywhere)
+- Lazy load routes with `React.lazy` and `Suspense`
+- Code split vendor bundles in Vite config
+
+### Best Practices
+
+- Avoid premature optimization
+- Profile before optimizing
+- Keep components small and focused

@@ -1,6 +1,5 @@
-import React from 'react';
-
 import { UseFormRegister, FieldError, FieldErrors, Path } from 'react-hook-form';
+
 import RequiredFieldIndicator from './RequiredFieldIndicator';
 
 interface FormInputProps<T extends Record<string, unknown>> {
@@ -116,4 +115,4 @@ const FormInput = <T extends Record<string, unknown>>({
   );
 };
 
-export default FormInput; 
+export default FormInput;

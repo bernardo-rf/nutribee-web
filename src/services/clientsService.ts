@@ -3,40 +3,33 @@ import { mockApi } from '@/mocks/api';
 import type { Client } from '@/types/domain';
 
 export interface CreateClientDTO {
-  // Basic Information
   name: string;
   email: string;
   phone?: string;
   dateOfBirth: string;
   gender: Client['gender'];
-  
-  // Health & Body Metrics
+
   height: Client['height'];
   weight: Client['weight'];
   bodyFatPercentage?: number;
-  
-  // Lifestyle & Activity
+
   activityLevel: Client['activityLevel'];
   exerciseRoutine?: Client['exerciseRoutine'];
   occupationType: Client['occupationType'];
-  
-  // Dietary Preferences
+
   dietType: Client['dietType'];
   foodAllergies?: string[];
   favoriteFoods?: string[];
   foodsToAvoid?: string[];
-  
-  // Health Goals
+
   primaryGoal: Client['primaryGoal'];
   targetWeight?: Client['targetWeight'];
   healthConcerns?: string[];
-  
-  // Lifestyle Habits
+
   hydration: Client['hydration'];
   sleep: Client['sleep'];
   supplements?: string[];
-  
-  // System Fields
+
   nutritionistId: string;
 }
 
@@ -108,4 +101,4 @@ export const clientsService = {
     const response = await get<Client['goals']>(`/clients/${id}/goals`);
     return response.data;
   },
-}; 
+};

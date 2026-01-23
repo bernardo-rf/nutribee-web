@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import { clientsService, Client, CreateClientDTO, UpdateClientDTO } from '@/services/clientsService';
+import { clientsService, CreateClientDTO, UpdateClientDTO } from '@/services/clientsService';
 import type { RootState } from '@/store';
+import type { Client } from '@/types/domain';
 
 interface ClientsState {
   items: Client[];
@@ -22,34 +23,28 @@ export const fetchClients = createAsyncThunk('clients/fetchClients', async () =>
   return await clientsService.getAll();
 });
 
-export const fetchClientById = createAsyncThunk(
-  'clients/fetchClientById',
-  async (id: string) => {
-    return await clientsService.getById(id);
-  }
-);
+export const fetchClientById = createAsyncThunk('clients/fetchClientById', async (id: string) => {
+  return await clientsService.getById(id);
+});
 
 export const createClient = createAsyncThunk(
   'clients/createClient',
   async (client: CreateClientDTO) => {
     return await clientsService.create(client);
-  }
+  },
 );
 
 export const updateClient = createAsyncThunk(
   'clients/updateClient',
   async ({ id, data }: { id: string; data: UpdateClientDTO }) => {
     return await clientsService.update(id, data);
-  }
+  },
 );
 
-export const deleteClient = createAsyncThunk(
-  'clients/deleteClient',
-  async (id: string) => {
-    await clientsService.delete(id);
-    return id;
-  }
-);
+export const deleteClient = createAsyncThunk('clients/deleteClient', async (id: string) => {
+  await clientsService.delete(id);
+  return id;
+});
 
 const clientsSlice = createSlice({
   name: 'clients',
@@ -86,7 +81,7 @@ const clientsSlice = createSlice({
       })
       // Update client
       .addCase(updateClient.fulfilled, (state, action) => {
-        const index = state.items.findIndex((client) => client.id === action.payload.id);
+        const index = state.items.findIndex((client: Client) => client.id === action.payload.id);
         if (index !== -1) {
           state.items[index] = action.payload;
         }
@@ -96,7 +91,7 @@ const clientsSlice = createSlice({
       })
       // Delete client
       .addCase(deleteClient.fulfilled, (state, action) => {
-        state.items = state.items.filter((client) => client.id !== action.payload);
+        state.items = state.items.filter((client: Client) => client.id !== action.payload);
         if (state.selectedClient?.id === action.payload) {
           state.selectedClient = null;
         }
@@ -106,7 +101,6 @@ const clientsSlice = createSlice({
 
 export const { setSelectedClient, clearError } = clientsSlice.actions;
 
-// Selectors
 export const selectAllClients = (state: RootState) => state.clients.items;
 export const selectClientById = (state: RootState, clientId: string) =>
   state.clients.items.find((client) => client.id === clientId);
@@ -114,4 +108,4 @@ export const selectSelectedClient = (state: RootState) => state.clients.selected
 export const selectClientsStatus = (state: RootState) => state.clients.status;
 export const selectClientsError = (state: RootState) => state.clients.error;
 
-export default clientsSlice.reducer; 
+export default clientsSlice.reducer;

@@ -6,7 +6,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
 export type Status = 'idle' | 'loading' | 'success' | 'error';
 
 // Common operation states
-export type OperationState<T = unknown> = 
+export type OperationState<T = unknown> =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'success'; data: T }
@@ -53,7 +53,16 @@ export type DateRange = {
 };
 
 // Common filter types
-export type FilterOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'startsWith' | 'endsWith';
+export type FilterOperator =
+  | 'eq'
+  | 'neq'
+  | 'gt'
+  | 'gte'
+  | 'lt'
+  | 'lte'
+  | 'contains'
+  | 'startsWith'
+  | 'endsWith';
 
 export type Filter = {
   field: string;
@@ -64,4 +73,4 @@ export type Filter = {
 export type FilterGroup = {
   operator: 'and' | 'or';
   filters: (Filter | FilterGroup)[];
-}; 
+};

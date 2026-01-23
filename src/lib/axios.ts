@@ -1,17 +1,17 @@
-import axios, { 
-  AxiosError, 
-  InternalAxiosRequestConfig, 
+import axios, {
+  AxiosError,
+  InternalAxiosRequestConfig,
   AxiosResponse,
-  AxiosRequestConfig 
+  AxiosRequestConfig,
 } from 'axios';
 
 import { APP_CONFIG } from '@/config/constants';
-import { ApiError } from '@/types/domain';
+import { ApiError } from '@/types/api';
+import { logger } from '@/utils/logger';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
-// Create axios instance with default config
 export const api = axios.create({
   baseURL: APP_CONFIG.api.baseUrl,
   timeout: APP_CONFIG.api.timeout,
@@ -20,72 +20,72 @@ export const api = axios.create({
   },
 });
 
-// Request interceptor
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Log request in development
-    if (import.meta.env.DEV) {
-      console.log(`🚀 [API] ${config.method?.toUpperCase()} ${config.url}`, {
-        headers: config.headers,
-        data: config.data,
-        params: config.params,
-      });
-    }
+    logger.apiRequest(config.method?.toUpperCase() || 'UNKNOWN', config.url || '', {
+      headers: config.headers,
+      data: config.data,
+      params: config.params,
+    });
     return config;
   },
   (error: AxiosError) => {
-    console.error('Request error:', error);
+    logger.error('Request error:', error);
     return Promise.reject(error);
-  }
+  },
 );
 
-// Response interceptor
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Log response in development
-    if (import.meta.env.DEV) {
-      console.log(`✅ [API] ${response.config.method?.toUpperCase()} ${response.config.url}`, {
-        status: response.status,
-        data: response.data,
-      });
-    }
+    logger.apiResponse(
+      response.config.method?.toUpperCase() || 'UNKNOWN',
+      response.config.url || '',
+      response.status,
+      response.data,
+    );
     return response;
   },
   async (error: AxiosError<ApiError>) => {
-    // Log error in development
-    if (import.meta.env.DEV) {
-      console.error(`❌ [API] ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
-        status: error.response?.status,
+    logger.apiError(
+      error.config?.method?.toUpperCase() || 'UNKNOWN',
+      error.config?.url || '',
+      error.response?.status,
+      {
         data: error.response?.data,
         message: error.message,
         stack: error.stack,
-      });
-    }
+      },
+    );
 
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: number };
 
-    // Handle 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
-      try {
-        const token = await refreshToken();
-        localStorage.setItem('token', token);
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
+      const isTokenRefreshEnabled = import.meta.env.VITE_ENABLE_TOKEN_REFRESH === 'true';
+
+      if (isTokenRefreshEnabled) {
+        try {
+          const token = await refreshToken();
+          localStorage.setItem('token', token);
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+          }
+          return api(originalRequest);
+        } catch (err) {
+          localStorage.removeItem('token');
+          globalThis.location.href = APP_CONFIG.routes.login;
+          throw err;
         }
-        return api(originalRequest);
-      } catch (err) {
+      } else {
         localStorage.removeItem('token');
-        window.location.href = APP_CONFIG.routes.login;
-        return Promise.reject(err);
+        globalThis.location.href = APP_CONFIG.routes.login;
+        throw error;
       }
     }
 
-    // Retry failed requests
     if (shouldRetry(error)) {
       return retryRequest(error);
     }
 
-    // Transform error to a consistent format
     const apiError: ApiError = {
       message: error.response?.data?.message ?? 'An unexpected error occurred',
       code: error.response?.data?.code ?? 'UNKNOWN_ERROR',
@@ -93,8 +93,8 @@ api.interceptors.response.use(
       details: error.response?.data?.details,
     };
 
-    return Promise.reject(apiError);
-  }
+    throw apiError;
+  },
 );
 
 function shouldRetry(error: AxiosError): boolean {
@@ -103,41 +103,40 @@ function shouldRetry(error: AxiosError): boolean {
 
 async function retryRequest(error: AxiosError): Promise<AxiosResponse> {
   const config = error.config as InternalAxiosRequestConfig & { _retry?: number };
-  
+
   if (!config) {
-    return Promise.reject(error);
+    throw error;
   }
-  
+
   config._retry = (config._retry || 0) + 1;
-  
+
   if (config._retry > MAX_RETRIES) {
-    return Promise.reject(error);
+    throw error;
   }
-  
-  // Exponential backoff
+
   const delay = RETRY_DELAY * Math.pow(2, config._retry - 1);
-  
-  await new Promise(resolve => setTimeout(resolve, delay));
-  
+
+  await new Promise((resolve) => setTimeout(resolve, delay));
+
   return api(config);
 }
 
 async function refreshToken(): Promise<string> {
-  throw new Error('Token refresh not implemented');
+  // TODO: Implement token refresh logic when backend supports it
+  throw new Error('Token refresh not implemented. Please implement authentication refresh logic.');
 }
 
-// Helper functions for common HTTP methods
-export const get = <T>(url: string, config?: AxiosRequestConfig) => 
+export const get = <T>(url: string, config?: AxiosRequestConfig) =>
   api.get<T, AxiosResponse<T>>(url, config);
 
-export const post = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => 
+export const post = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
   api.post<T, AxiosResponse<T>>(url, data, config);
 
-export const put = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => 
+export const put = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
   api.put<T, AxiosResponse<T>>(url, data, config);
 
-export const patch = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => 
+export const patch = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
   api.patch<T, AxiosResponse<T>>(url, data, config);
 
-export const del = <T>(url: string, config?: AxiosRequestConfig) => 
-  api.delete<T, AxiosResponse<T>>(url, config); 
+export const del = <T>(url: string, config?: AxiosRequestConfig) =>
+  api.delete<T, AxiosResponse<T>>(url, config);

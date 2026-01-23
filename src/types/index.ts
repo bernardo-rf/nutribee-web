@@ -2,4 +2,4 @@
 export * from './domain';
 export * from './api';
 export * from './common';
-export * from './store'; 
+export * from './store';

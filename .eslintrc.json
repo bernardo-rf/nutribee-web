@@ -22,6 +22,7 @@
     "project": ["./tsconfig.json", "./tsconfig.node.json"]
   },
   "plugins": ["react", "@typescript-eslint", "import"],
+  "ignorePatterns": ["node_modules/**", "dist/**", "jest-transformer.js", "jest-transformer.cjs"],
   "settings": {
     "react": {
       "version": "detect"
@@ -42,6 +43,7 @@
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
     "import/no-unresolved": "error",
     "import/order": [
       "error",
@@ -62,5 +64,22 @@
         }
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["vite.config.ts", "jest.config.ts"],
+      "rules": {
+        "import/namespace": "off",
+        "import/default": "off",
+        "import/no-named-as-default": "off",
+        "import/no-named-as-default-member": "off"
+      }
+    },
+    {
+      "files": ["*.js", "*.cjs"],
+      "parserOptions": {
+        "project": null
+      }
+    }
+  ]
 } 

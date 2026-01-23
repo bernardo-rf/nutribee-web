@@ -1,8 +1,10 @@
+import type { ApiResponse } from '@/types/api';
+import type { Client } from '@/types/domain';
+
 import { mockClients } from './clients';
-import type { ApiResponse } from '../types/domain';
 
 // Simulate network delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const mockApi = {
   async get<T>(url: string): Promise<ApiResponse<T>> {
@@ -17,8 +19,8 @@ export const mockApi = {
 
     if (url.startsWith('/clients/')) {
       const id = url.split('/')[2];
-      const client = mockClients.find(c => c.id === id);
-      
+      const client = mockClients.find((c) => c.id === id);
+
       if (!client) {
         throw new Error('Client not found');
       }
@@ -37,15 +39,15 @@ export const mockApi = {
 
     if (url === '/clients') {
       const newClient = {
-        ...data,
+        ...(data as Record<string, unknown>),
         id: String(mockClients.length + 1),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         measurements: [],
         goals: [],
-      };
+      } as unknown as Client;
 
-      mockClients.push(newClient as any);
+      mockClients.push(newClient);
 
       return {
         data: newClient as T,
@@ -61,7 +63,7 @@ export const mockApi = {
 
     if (url.startsWith('/clients/')) {
       const id = url.split('/')[2];
-      const index = mockClients.findIndex(c => c.id === id);
+      const index = mockClients.findIndex((c) => c.id === id);
 
       if (index === -1) {
         throw new Error('Client not found');
@@ -69,11 +71,11 @@ export const mockApi = {
 
       const updatedClient = {
         ...mockClients[index],
-        ...data,
+        ...(data as Record<string, unknown>),
         updatedAt: new Date().toISOString(),
-      };
+      } as unknown as Client;
 
-      mockClients[index] = updatedClient as any;
+      mockClients[index] = updatedClient;
 
       return {
         data: updatedClient as T,
@@ -89,7 +91,7 @@ export const mockApi = {
 
     if (url.startsWith('/clients/')) {
       const id = url.split('/')[2];
-      const index = mockClients.findIndex(c => c.id === id);
+      const index = mockClients.findIndex((c) => c.id === id);
 
       if (index === -1) {
         throw new Error('Client not found');
@@ -101,4 +103,4 @@ export const mockApi = {
 
     throw new Error('Endpoint not found');
   },
-}; 
+};

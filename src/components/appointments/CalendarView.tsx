@@ -1,4 +1,3 @@
-import type { EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import multiMonthPlugin from '@fullcalendar/multimonth';
@@ -7,7 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { format } from 'date-fns';
 
 import type { Appointment } from '../../pages/AppointmentsPage';
-import './CalendarView.css';
+import './../../styles/CalendarView.css';
 
 interface CalendarViewProps {
   appointments: Appointment[];
@@ -99,7 +98,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
 const addMinutesToTime = (time: string, minutes: number): string => {
   const date = new Date();
   const [hours, mins] = time.split(':');
-  date.setHours(parseInt(hours || '0', 10), parseInt(mins || '0', 10));
+  date.setHours(Number.parseInt(hours || '0', 10), Number.parseInt(mins || '0', 10));
   date.setMinutes(date.getMinutes() + minutes);
   return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 };
@@ -118,4 +117,4 @@ const getStatusColor = (status: Appointment['status']): string => {
   }
 };
 
-export default CalendarView; 
+export default CalendarView;

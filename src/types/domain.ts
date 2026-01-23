@@ -1,4 +1,4 @@
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from 'react-hook-form';
 
 // Base types
 export interface BaseEntity {
@@ -24,34 +24,34 @@ export interface Client extends BaseEntity {
   phone?: string;
   dateOfBirth: string;
   gender: Gender;
-  
+
   // Health & Body Metrics
   height: MeasurementValue;
   weight: MeasurementValue;
   bodyFatPercentage?: number;
   bmi?: number;
-  
+
   // Lifestyle & Activity
   activityLevel: ActivityLevel;
   exerciseRoutine?: ExerciseRoutine;
   occupationType: OccupationType;
-  
+
   // Dietary Preferences
   dietType: DietType;
   foodAllergies?: string[];
   favoriteFoods?: string[];
   foodsToAvoid?: string[];
-  
+
   // Health Goals
   primaryGoal: HealthGoal;
   targetWeight?: MeasurementValue;
   healthConcerns?: string[];
-  
+
   // Lifestyle Habits
   hydration: HydrationInfo;
   sleep: SleepInfo;
   supplements?: string[];
-  
+
   // System Fields
   status: ClientStatus;
   nutritionistId: string;
@@ -76,12 +76,7 @@ export interface Measurement extends BaseEntity {
   notes?: string;
 }
 
-export type MeasurementType = 
-  | 'weight' 
-  | 'height' 
-  | 'bodyFat' 
-  | 'muscleMass' 
-  | 'bmi';
+export type MeasurementType = 'weight' | 'height' | 'bodyFat' | 'muscleMass' | 'bmi';
 
 export interface MeasurementValue {
   value: number;
@@ -98,17 +93,9 @@ export interface NutritionGoal extends BaseEntity {
   status: GoalStatus;
 }
 
-export type GoalType = 
-  | 'weightLoss' 
-  | 'weightGain' 
-  | 'muscleGain' 
-  | 'maintenance';
+export type GoalType = 'weightLoss' | 'weightGain' | 'muscleGain' | 'maintenance';
 
-export type GoalStatus = 
-  | 'notStarted'
-  | 'inProgress'
-  | 'achieved'
-  | 'failed';
+export type GoalStatus = 'notStarted' | 'inProgress' | 'achieved' | 'failed';
 
 // Supporting interfaces
 export interface ExerciseRoutine {
@@ -126,24 +113,11 @@ export interface SleepInfo {
 }
 
 // Operation states
-export type OperationStatus = 
+export type OperationStatus =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'success'; data: unknown }
   | { status: 'error'; error: Error };
-
-// API Response types
-export type ApiResponse<T> = {
-  data: T;
-  message?: string;
-};
-
-export type ApiError = {
-  code: string;
-  message: string;
-  status: number;
-  details?: Record<string, unknown>;
-}; 
 
 // src/types/domain.ts
 // Add these new types to your existing file
@@ -160,13 +134,13 @@ export interface ClientFormData extends Omit<Client, 'id' | 'createdAt' | 'updat
   bedTime: string;
   foodIntolerances: string[];
   waterIntake: number;
-  
+
   // Health metrics specific to the form
   visceralFat?: number;
   muscleMass?: number;
   muscleMassPercentage?: number;
   bodyWaterPercentage?: number;
-  
+
   // Blood work
   hdlCholesterol?: number;
   ldlCholesterol?: number;

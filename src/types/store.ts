@@ -43,7 +43,7 @@ export interface Notification {
 }
 
 // Action Types
-export type ActionType = 
+export type ActionType =
   | 'clients/fetchAll'
   | 'clients/fetchById'
   | 'clients/create'
@@ -71,4 +71,4 @@ export type ThunkAction = {
     requestId?: string;
     timestamp?: number;
   };
-}; 
+};

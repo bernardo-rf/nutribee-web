@@ -32,45 +32,43 @@ export const useClients = () => {
     (id: string) => {
       return dispatch(fetchClientById(id));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const addClient = useCallback(
     (client: CreateClientDTO) => {
       return dispatch(createClient(client));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const editClient = useCallback(
     (id: string, data: UpdateClientDTO) => {
       return dispatch(updateClient({ id, data }));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const removeClient = useCallback(
     (id: string) => {
       return dispatch(deleteClient(id));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const selectClient = useCallback(
     (client: RootState['clients']['selectedClient']) => {
       dispatch(setSelectedClient(client));
     },
-    [dispatch]
+    [dispatch],
   );
 
   return {
-    // State
     clients,
     selectedClient,
     status,
     error,
     isLoading: status === 'loading',
-    // Actions
     getClients,
     getClientById,
     addClient,
@@ -78,4 +76,4 @@ export const useClients = () => {
     removeClient,
     selectClient,
   };
-}; 
+};
