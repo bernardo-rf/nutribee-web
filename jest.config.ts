@@ -25,14 +25,7 @@ const config: Config = {
     },
   },
   transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest',
-      {
-        tsconfig: {
-          jsx: 'react-jsx',
-        },
-      },
-    ],
+    '^.+\\.tsx?$': '<rootDir>/jest-transformer.cjs',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],

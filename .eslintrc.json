@@ -22,7 +22,7 @@
     "project": ["./tsconfig.json", "./tsconfig.node.json"]
   },
   "plugins": ["react", "@typescript-eslint", "import"],
-  "ignorePatterns": ["node_modules/**", "dist/**"],
+  "ignorePatterns": ["node_modules/**", "dist/**", "jest-transformer.js", "jest-transformer.cjs"],
   "settings": {
     "react": {
       "version": "detect"
@@ -73,6 +73,12 @@
         "import/default": "off",
         "import/no-named-as-default": "off",
         "import/no-named-as-default-member": "off"
+      }
+    },
+    {
+      "files": ["*.js", "*.cjs"],
+      "parserOptions": {
+        "project": null
       }
     }
   ]
