@@ -28,11 +28,11 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["node", "react", "react-dom"],
+    "types": ["node", "react", "react-dom", "jest", "@testing-library/jest-dom"],
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 } 

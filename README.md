@@ -7,7 +7,7 @@ A comprehensive nutrition practice management web application built with React a
 ### Current Features
 
 - **Dashboard**: Overview of key metrics including total clients, appointments, active programs, and client progress
-- **Client Management**: 
+- **Client Management**:
   - Add new clients with comprehensive intake forms
   - View and search client list
   - Track client health metrics, dietary information, and health goals
@@ -34,60 +34,41 @@ A comprehensive nutrition practice management web application built with React a
 - **Vite** - Build tool and development server
 - **React Router DOM** - Client-side routing
 
-### Code Quality
-
-- **ESLint** - Linting with TypeScript and React plugins
-- **Prettier** - Code formatting
-- **Husky** - Git hooks
-- **lint-staged** - Run linters on staged files
-
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js** (v18 or higher recommended)
+- **Node.js** (v22 or higher recommended)
 - **npm** (v9 or higher) or **yarn** or **pnpm**
 
 ## Installation
 
-1. Clone the repository:
+- Clone the repository:
+
 ```bash
-git clone <repository-url>
-cd nutribee-web
+  git clone <repository-url>
+  cd nutribee-web
 ```
 
-2. Install dependencies:
+- Install dependencies:
+
 ```bash
-npm install
+  npm install
 ```
 
-3. Create a `.env` file in the root directory:
+- Create a `.env` file in the root directory:
+
 ```bash
-cp .env.example .env
+  cp .env.example .env
 ```
 
-4. Configure environment variables (see [Environment Variables](#environment-variables) section)
+- Start the development server:
 
-5. Start the development server:
 ```bash
-npm run dev
+  npm run dev
 ```
 
 The application will be available at `http://localhost:3000` (or the port specified in your Vite config).
-
-## Environment Variables
-
-Create a `.env` file in the root directory with the following variables:
-
-```env
-VITE_API_BASE_URL=http://localhost:3000
-```
-
-### Environment Variable Descriptions
-
-- `VITE_API_BASE_URL` - Base URL for the backend API (required)
-
-**Note**: All environment variables prefixed with `VITE_` are exposed to the client-side code. Do not include sensitive information like API keys or secrets.
 
 ## Available Scripts
 
