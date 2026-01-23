@@ -24,4 +24,4 @@ export const QUERY_KEYS = {
     all: ['appointments'] as const,
     detail: (id: string) => ['appointments', id] as const,
   },
-} as const; 
+} as const;

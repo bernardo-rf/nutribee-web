@@ -15,27 +15,31 @@ const measurementSchema = z.object({
   unit: z.enum(['cm', 'in']),
 });
 
-const exerciseRoutineSchema = z.object({
-  type: z.string(),
-  frequency: z.string(),
-  duration: z.string(),
-}).optional();
+const exerciseRoutineSchema = z
+  .object({
+    type: z.string(),
+    frequency: z.string(),
+    duration: z.string(),
+  })
+  .optional();
 
 const hydrationSchema = z.object({
-  dailyWaterIntake: z.number()
+  dailyWaterIntake: z
+    .number()
     .min(0, 'Daily water intake must be positive')
     .max(20, 'Daily water intake is too high')
-    .refine(val => Number(val.toFixed(1)) === val, {
-      message: 'Daily water intake must have at most one decimal place'
+    .refine((val) => Number(val.toFixed(1)) === val, {
+      message: 'Daily water intake must have at most one decimal place',
     }),
 });
 
 const sleepSchema = z.object({
-  averageDuration: z.number()
+  averageDuration: z
+    .number()
     .min(0, 'Average sleep duration must be positive')
     .max(24, 'Average sleep duration cannot exceed 24 hours')
-    .refine(val => Number(val.toFixed(1)) === val, {
-      message: 'Average sleep duration must have at most one decimal place'
+    .refine((val) => Number(val.toFixed(1)) === val, {
+      message: 'Average sleep duration must have at most one decimal place',
     }),
 });
 
@@ -50,7 +54,7 @@ export const clientFormSchema = z.object({
   appointmentReason: z.string().min(1, 'Appointment reason is required'),
   expectations: z.string().min(1, 'Expectations are required'),
   clinicalObjective: z.string().min(1, 'Clinical objective is required'),
-  
+
   // Personal & Social History
   intestinalFunction: z.string().min(1, 'Intestinal function information is required'),
   sleepQuality: z.enum(['poor', 'fair', 'good', 'excellent']),
@@ -71,13 +75,13 @@ export const clientFormSchema = z.object({
   abdominalCircumference: measurementSchema.optional(),
   waistCircumference: measurementSchema.optional(),
   chestCircumference: measurementSchema.optional(),
-  
+
   // Analytical Data
   hdlCholesterol: z.number().min(0, 'HDL cholesterol must be positive').optional(),
   ldlCholesterol: z.number().min(0, 'LDL cholesterol must be positive').optional(),
   totalCholesterol: z.number().min(0, 'Total cholesterol must be positive').optional(),
   triglycerides: z.number().min(0, 'Triglycerides must be positive').optional(),
-  
+
   // Body Composition
   visceralFat: z.number().min(0, 'Visceral fat must be positive').optional(),
   muscleMass: z.number().min(0, 'Muscle mass must be positive').optional(),
@@ -110,4 +114,4 @@ export const clientFormSchema = z.object({
   nutritionistId: z.string(),
 });
 
-export type ClientFormData = z.infer<typeof clientFormSchema>; 
+export type ClientFormData = z.infer<typeof clientFormSchema>;

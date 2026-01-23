@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import clientsReducer from './slices/clientsSlice';
+import clientsReducer, { fetchClients } from './slices/clientsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,11 +10,15 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['clients/fetchClients/pending', 'clients/fetchClients/fulfilled', 'clients/fetchClients/rejected'],
+        ignoredActions: [
+          fetchClients.pending.type,
+          fetchClients.fulfilled.type,
+          fetchClients.rejected.type,
+        ],
       },
     }),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: import.meta.env.DEV,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch; 
+export type AppDispatch = typeof store.dispatch;

@@ -14,4 +14,4 @@ export function validateEnv(): void {
     console.error('Invalid environment variables:', parsed.error);
     throw new Error('Invalid environment variables');
   }
-} 
+}

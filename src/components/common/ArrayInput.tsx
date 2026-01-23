@@ -1,13 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import type { 
-  UseFormSetValue, 
-  FieldError, 
-  FieldErrors, 
-  Path, 
-  PathValue 
-} from 'react-hook-form';
+import type { UseFormSetValue, FieldError, FieldErrors, Path, PathValue } from 'react-hook-form';
 
 interface ArrayInputProps<T extends Record<string, unknown>> {
   label: string;
@@ -47,8 +41,8 @@ const ArrayInput = <T extends Record<string, unknown>>({
   className = '',
   maxItems,
 }: ArrayInputProps<T>) => {
-  const [items, setItems] = React.useState<string[]>([]);
-  const [newItem, setNewItem] = React.useState('');
+  const [items, setItems] = useState<string[]>([]);
+  const [newItem, setNewItem] = useState('');
 
   const errorMessage = error?.message as string | undefined;
   const inputId = `input-${String(name)}`;
@@ -81,10 +75,7 @@ const ArrayInput = <T extends Record<string, unknown>>({
 
   return (
     <div className={`space-y-1 ${className}`}>
-      <label 
-        htmlFor={inputId}
-        className="block text-sm font-medium text-gray-700"
-      >
+      <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
       <div className="flex gap-2">
@@ -111,11 +102,7 @@ const ArrayInput = <T extends Record<string, unknown>>({
         </button>
       </div>
       {items.length > 0 && (
-        <ul 
-          id={listId}
-          className="space-y-1"
-          aria-label={`${label} items`}
-        >
+        <ul id={listId} className="space-y-1" aria-label={`${label} items`}>
           {items.map((item, index) => (
             <ListItem
               key={`${item}-${index}`}
@@ -139,4 +126,4 @@ const ArrayInput = <T extends Record<string, unknown>>({
   );
 };
 
-export default ArrayInput; 
+export default ArrayInput;

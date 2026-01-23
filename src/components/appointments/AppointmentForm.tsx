@@ -5,31 +5,44 @@ import { useForm } from 'react-hook-form';
 
 import type { Appointment } from '../../pages/AppointmentsPage';
 
+type AppointmentFormData = Omit<Appointment, 'id' | 'date'> & {
+  date: string;
+};
+
 interface AppointmentFormProps {
   appointment?: Appointment;
   onSubmit: (data: Omit<Appointment, 'id'>) => void;
   onCancel: () => void;
 }
 
-const AppointmentForm: React.FC<AppointmentFormProps> = ({
-  appointment,
-  onSubmit,
-  onCancel,
-}) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<Omit<Appointment, 'id'>>({
-    defaultValues: appointment ? {
-      patientName: appointment.patientName,
-      date: format(appointment.date, 'yyyy-MM-dd'),
-      time: appointment.time,
-      duration: appointment.duration,
-      type: appointment.type,
-      notes: appointment.notes,
-      status: appointment.status,
-    } : undefined,
+const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onSubmit, onCancel }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AppointmentFormData>({
+    defaultValues: appointment
+      ? {
+          patientName: appointment.patientName,
+          date: format(appointment.date, 'yyyy-MM-dd'),
+          time: appointment.time,
+          duration: appointment.duration,
+          type: appointment.type,
+          notes: appointment.notes,
+          status: appointment.status,
+        }
+      : undefined,
   });
 
+  const handleFormSubmit = (data: AppointmentFormData) => {
+    onSubmit({
+      ...data,
+      date: new Date(data.date),
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div>
         <label htmlFor="patientName" className="block text-sm font-medium text-gray-700">
           Patient Name
@@ -55,9 +68,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           {...register('date', { required: 'Date is required' })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
         />
-        {errors.date && (
-          <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
-        )}
+        {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>}
       </div>
 
       <div>
@@ -70,9 +81,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           {...register('time', { required: 'Time is required' })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
         />
-        {errors.time && (
-          <p className="mt-1 text-sm text-red-600">{errors.time.message}</p>
-        )}
+        {errors.time && <p className="mt-1 text-sm text-red-600">{errors.time.message}</p>}
       </div>
 
       <div>
@@ -84,15 +93,13 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           id="duration"
           min="15"
           step="15"
-          {...register('duration', { 
+          {...register('duration', {
             required: 'Duration is required',
             min: { value: 15, message: 'Duration must be at least 15 minutes' },
           })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
         />
-        {errors.duration && (
-          <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
-        )}
+        {errors.duration && <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>}
       </div>
 
       <div>
@@ -110,9 +117,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           <option value="check-up">Check-up</option>
           <option value="treatment">Treatment</option>
         </select>
-        {errors.type && (
-          <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>
-        )}
+        {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>}
       </div>
 
       <div>
@@ -140,9 +145,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
         </select>
-        {errors.status && (
-          <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>
-        )}
+        {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>}
       </div>
 
       <div className="flex justify-end space-x-3 pt-4">
@@ -164,4 +167,4 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   );
 };
 
-export default AppointmentForm; 
+export default AppointmentForm;

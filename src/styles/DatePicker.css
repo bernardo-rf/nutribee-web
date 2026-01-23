@@ -1,0 +1,125 @@
+.date-picker-container {
+  position: relative;
+}
+
+.date-picker-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(55 65 81);
+  margin-bottom: 0.25rem;
+}
+
+.date-picker-required {
+  color: rgb(239 68 68);
+  margin-left: 0.25rem;
+}
+
+.date-picker-input {
+  display: block;
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 0;
+  padding: 0.375rem 0.75rem;
+  color: rgb(17 24 39);
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+}
+
+.date-picker-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(99 102 241);
+}
+
+.date-picker-error {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: rgb(220 38 38);
+}
+
+.date-picker-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.date-picker-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgb(0 0 0 / 0.25);
+}
+
+.date-picker-content {
+  position: relative;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  padding: 1rem;
+  width: 18rem;
+}
+
+.date-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.date-picker-month {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.date-picker-nav-button {
+  padding: 0.5rem;
+  border-radius: 9999px;
+}
+
+.date-picker-nav-button:hover {
+  background-color: rgb(243 244 246);
+}
+
+.date-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.date-picker-weekday {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(107 114 128);
+  padding: 0.25rem 0;
+}
+
+.date-picker-day {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  text-align: center;
+}
+
+.date-picker-day:hover {
+  background-color: rgb(243 244 246);
+}
+
+.date-picker-day-other-month {
+  color: rgb(156 163 175);
+}
+
+.date-picker-day-today {
+  background-color: rgb(239 246 255);
+  color: rgb(37 99 235);
+}
+
+.date-picker-day-selected {
+  background-color: rgb(79 70 229);
+  color: white;
+}

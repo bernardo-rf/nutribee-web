@@ -19,7 +19,10 @@ export type ApiError = {
 };
 
 // API Request types
-export type CreateClientRequest = Omit<Client, 'id' | 'createdAt' | 'updatedAt' | 'measurements' | 'goals'>;
+export type CreateClientRequest = Omit<
+  Client,
+  'id' | 'createdAt' | 'updatedAt' | 'measurements' | 'goals'
+>;
 export type UpdateClientRequest = Partial<CreateClientRequest>;
 
 export type CreateMeasurementRequest = Omit<Measurement, 'id' | 'createdAt' | 'updatedAt'>;
@@ -49,4 +52,4 @@ export type ApiEndpoints = {
     update: (id: string, data: UpdateGoalRequest) => Promise<ApiResponse<NutritionGoal>>;
     delete: (id: string) => Promise<ApiResponse<void>>;
   };
-}; 
+};

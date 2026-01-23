@@ -1,4 +1,6 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
+
+import { logger } from '@/utils/logger';
 
 interface Props {
   children: ReactNode;
@@ -23,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error:', error.message);
+    logger.error('Error:', error.message, { error, errorInfo });
     this.setState({ errorInfo });
     this.props.onError?.(error, errorInfo);
   }
@@ -43,7 +45,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div 
+          <div
             className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
             role="alert"
             aria-live="assertive"
@@ -56,7 +58,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <p className="mt-2 text-center text-sm text-gray-600">
                   {this.state.error?.message || 'An unexpected error occurred'}
                 </p>
-                {process.env.NODE_ENV === 'development' && this.state.errorInfo && (
+                {import.meta.env.DEV && this.state.errorInfo && (
                   <pre className="mt-4 p-4 bg-gray-100 rounded-md overflow-auto text-xs">
                     {this.state.errorInfo.componentStack}
                   </pre>
@@ -70,7 +72,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   Try again
                 </button>
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={() => globalThis.location.reload()}
                   className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
                   Reload page
@@ -86,4 +88,4 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export default ErrorBoundary; 
+export default ErrorBoundary;

@@ -61,11 +61,13 @@ const ListView: React.FC<ListViewProps> = ({ appointments, onEdit, onDelete }) =
                   {appointment.type}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                     ${appointment.status === 'scheduled' ? 'bg-yellow-100 text-yellow-800' : ''}
                     ${appointment.status === 'completed' ? 'bg-green-100 text-green-800' : ''}
                     ${appointment.status === 'cancelled' ? 'bg-red-100 text-red-800' : ''}
-                  `}>
+                  `}
+                  >
                     {appointment.status}
                   </span>
                 </td>
@@ -97,7 +99,7 @@ const AppointmentsPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | undefined>();
-  const [appointments] = useState<Appointment[]>([]); // This will be replaced with actual data fetching
+  const [appointments] = useState<Appointment[]>([]); // TODO: This will be replaced with actual data fetching
 
   const handleEditAppointment = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -105,7 +107,7 @@ const AppointmentsPage: React.FC = () => {
   };
 
   const handleDeleteAppointment = (appointmentId: string) => {
-    // Implementation will go here
+    // TODO: Implementation will go here
     console.log('Delete appointment:', appointmentId);
   };
 
@@ -165,9 +167,7 @@ const AppointmentsPage: React.FC = () => {
         placeholder="Search appointments..."
         className="rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
       />
-      <select
-        className="rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-      >
+      <select className="rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
         <option value="">All Status</option>
         <option value="scheduled">Scheduled</option>
         <option value="completed">Completed</option>
@@ -226,4 +226,4 @@ const AppointmentsPage: React.FC = () => {
   );
 };
 
-export default AppointmentsPage; 
+export default AppointmentsPage;
