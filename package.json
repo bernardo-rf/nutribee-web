@@ -24,7 +24,7 @@
     "@fullcalendar/timegrid": "^6.1.17",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
-    "@hookform/resolvers": "^3.3.4",
+    "@hookform/resolvers": "^5.2.2",
     "@reduxjs/toolkit": "^2.2.1",
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
